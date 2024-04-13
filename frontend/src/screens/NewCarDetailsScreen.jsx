@@ -46,7 +46,7 @@ const NewCarDetailsScreen = () => {
             <div className='grid grid-rows-3 sm:p-16 pb-12 dark:text-white'>
               <h1 className='text-3xl sm:text-4xl font-bold font-serif text-center' data-aos="fade-up">{newCar.brand} {newCar.model}</h1>
               <div className='grid grid-cols-4'>
-                <div className='px-10 text-center  font-bold transition-transform transform hover:scale-105'>
+                <div className='px-10 text-center font-bold transition-transform transform hover:scale-105'>
                   <img src={calendar} className='pb-4 dark:text-white' />{newCar.makeYear}
                 </div>
               <div className='px-10 text-center font-bold transition-transform transform hover:scale-105'>
