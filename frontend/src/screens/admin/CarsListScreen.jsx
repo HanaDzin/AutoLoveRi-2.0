@@ -95,6 +95,7 @@ const CarsListScreen = () => {
                 <table className="text-md text-serif min-w-full">
             <thead className='text-primary shadow-lg'>
               <tr>
+                <th className="px-4 py-2 "></th>
                 <th className="px-4 py-2 ">ID</th>
                 <th className="px-4 py-2 ">Naziv vozila</th>
                 <th className="px-4 py-2 ">Cijena</th>
@@ -104,7 +105,8 @@ const CarsListScreen = () => {
 
           <tbody>
             { newCars.map((car) => (
-              <tr key={car._id} >
+              <tr key={car._id} className="hover:scale-105 transition-transform">
+              <td className='px-4 py-2'><img src={car.image} className='w-20 h-auto' alt="" /></td>
                 <td className='px-4 py-2'>{car._id}</td>
                 <td className='px-4 py-2'>{car.brand} {car.model}</td>
                 <td className='px-4 py-2'>{(car.price).toFixed(2)} € </td>
@@ -146,6 +148,7 @@ const CarsListScreen = () => {
                 <table class="text-md text-serif min-w-full">
             <thead className='text-primary shadow-lg'>
               <tr>
+              <th className="px-4 py-2 "></th>
                 <th className="px-4 py-2 ">ID</th>
                 <th className="px-4 py-2 ">Naziv vozila</th>
                 <th className="px-4 py-2 ">Cijena</th>
@@ -155,7 +158,8 @@ const CarsListScreen = () => {
 
           <tbody>
             { usedCars.map((car) => (
-              <tr key={car._id} >
+              <tr key={car._id} className="hover:scale-105 transition-transform">
+              <td className='px-4 py-2'><img src={car.image} className='w-20 h-auto' alt="" /></td>
                 <td className='px-4 py-2'>{car._id}</td>
                 <td className='px-4 py-2'>{car.brand} {car.model}</td>
                 <td className='px-4 py-2'>{(car.price).toFixed(2)} € </td>
