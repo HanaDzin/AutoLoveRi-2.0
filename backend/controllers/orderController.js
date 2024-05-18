@@ -2,7 +2,7 @@ import asyncHandler from "../middleware/asyncHandler.js";
 import Order from '../models/orderModel.js'
 
 
-// @desc kreiranje nove narudžbe
+// @desc creates a new order
 // @route POST /api/orders
 // @acces private
 const addOrderItems = asyncHandler (async (req, res) => {
@@ -18,7 +18,7 @@ const addOrderItems = asyncHandler (async (req, res) => {
 
     if (orderItems && orderItems.length == 0) {
         res.status(400);
-        throw new Error ('Nema odabranih artikala');
+        throw new Error ('No selected article');
     } else {
         const order = new Order ({
             orderItems: orderItems.map((x) => ({
@@ -38,11 +38,11 @@ const addOrderItems = asyncHandler (async (req, res) => {
         res.status(201).json(createdOrder);
     }
 
-   res.json('Uspješno dodana narudžba!');
+   res.json('Successfully made an order');
 
 });
 
-// @desc dohvat svih narudžbi logiranog korisnika
+// @desc get all orders of the currently logged in user
 // @route GET /api/orders/myorders
 // @acces private
 const getMyOrders = asyncHandler (async (req, res) => {
@@ -50,23 +50,23 @@ const getMyOrders = asyncHandler (async (req, res) => {
     res.status(200).json(orders);
 });
 
-// @desc dohvat narudžbe po njenom id-u
+// @desc get order by id
 // @route GET /api/orders/:id
 // @acces private
 const getOrderById = asyncHandler (async (req, res) => {
-    //nakon pronalaska narudžbe putem id-a + dodaj ime korisnika i njegov mail
+    //after the order is found, add the name of user and his email
     const order = await Order.findById(req.params.id).populate('user', 'name email');
 
     if (order) {
         res.status(200).json(order);
     } else {
         res.status(404);
-        throw new Error ('Narudžba nije pronađena!')
+        throw new Error ('Order not found')
     }
 
 });
 
-// @desc ažuriranje statusa narudžbe na "plaćeno"
+// @desc updates the order status to paid
 // @route PUT /api/orders/:id/pay
 // @acces private
 const updateOrderToPaid = asyncHandler (async (req, res) => {
@@ -87,11 +87,11 @@ const updateOrderToPaid = asyncHandler (async (req, res) => {
 
         } else {
             res.status(404);
-            throw new Error ('Narudžba nije pronađena')
+            throw new Error ('Order not found')
     }
 });
 
-// @desc ažuriranje statusa narudžbe na "isporučeno"
+// @desc updates the order status to delivered
 // @route GET /api/orders/:id/delivery
 // @acces private/admin
 const updateOrderToDelivered = asyncHandler (async (req, res) => {
@@ -105,11 +105,11 @@ const updateOrderToDelivered = asyncHandler (async (req, res) => {
         res.status(200).json(updatedOrder);
 
     } else {
-        throw new Error('Narudžba nije pronađena');
+        throw new Error('Order not found');
     }
 });
 
-// @desc dohvat svih narudžbi (da admin može vidjeti sve, od svih korisnika)
+// @desc gets all orders (so that admin can see all orders ever made)
 // @route PUT /api/orders/
 // @acces private/admin
 const getOrders = asyncHandler (async (req, res) => {

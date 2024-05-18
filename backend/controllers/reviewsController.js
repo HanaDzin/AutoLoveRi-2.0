@@ -2,7 +2,7 @@ import asyncHandler from "../middleware/asyncHandler.js";
 
 import Review from "../models/reviewModel.js";
 
-// @desc dohvat najnovije 3 recenzije
+// @desc gets 3 most recent reviews
 // @route GET /api/reviews
 // @acces public
 const getNewestReviews = asyncHandler (async (req, res) => {

@@ -21,22 +21,22 @@ dotenv.config();
 
 await connectDB();
 
-//unos podataka
+//to import data into db:
 const importData = async () => {
     try {
-        //pobriši sve prije unosa novih podataka:
-        /*await Order.deleteMany();
+        //before importing, delete all existing data:
+        await Order.deleteMany();
         await newCar.deleteMany();
         await usedCar.deleteMany();
         await User.deleteMany();
 
-        //kreirati korisnika od podataka iz users.js
+        //create users in db from data/users.js:
         const createdUsers = await User.insertMany(users);
 
-        //samo admin može dodavati nove aute:
+        //only admin can add new cars:
         const adminUser = createdUsers[0]._id;      //dohvat njegovog id-a
 
-        //svako auto ima dodatnu stavku user:admin (id admina)
+        //every car has a 'user' property with adminId
         const sampleNewCars = newcars.map((car) => {
             return { ...car, user: adminUser};
         });
@@ -49,10 +49,10 @@ const importData = async () => {
             return { ...order, user: adminUser};
         });
 
-        //unos auta u bazu
+        //adding items into db:
         await newCar.insertMany(sampleNewCars);
         await usedCar.insertMany(sampleUsedCars);
-        await Order.insertMany(sampleOrder);*/
+        await Order.insertMany(sampleOrder);
 
         await Review.deleteMany();
         await Review.insertMany(reviews);
@@ -67,13 +67,14 @@ const importData = async () => {
     }
 }
 
-//brisanje podataka
+//to delete data from db
 const destroyData = async () => {
     try {
         await Order.deleteMany();
         await newCar.deleteMany();
         await usedCar.deleteMany();
         await User.deleteMany();
+        await Review.deleteMany();
 
         console.log('Data Destroyed!'.red.inverse);
         process.exit();
@@ -84,7 +85,7 @@ const destroyData = async () => {
     }
 };
 
-//ako se pozove sa '-d' --> brisanje podataka, u suprotnom dodavanje u bazu
+//if called with'-d' --> destroys data, otherwise - adds data into db
 if (process.argv[2] === '-d') {
     destroyData();
 } else {

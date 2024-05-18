@@ -4,7 +4,7 @@ import newCar from '../models/newCarModel.js'
 import usedCar from '../models/usedCarModel.js'
 
 
-// @desc dohvat svih novih vozila
+// @desc gets all of the new cars
 // @route GET /api/newcars
 // @acces public
 const getNewCars = asyncHandler (async (req, res) => {
@@ -13,7 +13,7 @@ const getNewCars = asyncHandler (async (req, res) => {
 });
 
 
-//@desc Dohvat vozila po id-u
+//@desc gets a car with specified id
 //@route GET /api/newcars/:id
 //@access public
 const getNewCarById = asyncHandler (async (req, res) => {
@@ -23,10 +23,10 @@ const getNewCarById = asyncHandler (async (req, res) => {
         return res.json(theNewCar);
     } 
     res.status(404);
-    throw new Error('Novo vozilo nije pronađeno');
+    throw new Error('New car not found');
 });
 
-//@desc     Dodaj novo vozilo (admin)
+//@desc     add a new car (admin)
 //@route    POST /api/newcars
 //@access   admin
 const createNewCar = asyncHandler (async (req, res) => {
@@ -47,7 +47,7 @@ const createNewCar = asyncHandler (async (req, res) => {
     res.status(201).json(createdNewCar);
 });
 
-// @desc Ažuriranje novog vozila
+// @desc update a new car
 // @route PUT /api/newcars/:id
 // @acces private/admin
 const updateNewCar = asyncHandler (async (req, res) => {
@@ -69,10 +69,10 @@ const updateNewCar = asyncHandler (async (req, res) => {
         res.json(updatedNewCar);
     } else {
         res.status(404);
-        throw new Error('Resurs nije pronađen');
+        throw new Error('Resource not found');
     }
 });
-// @desc Brisanje novog vozila
+// @desc delete a new car
 // @route DELETE /api/newcars/:id
 // @acces private/admin
 const deleteNewCar = asyncHandler (async (req, res) => {
@@ -81,27 +81,31 @@ const deleteNewCar = asyncHandler (async (req, res) => {
 
     if (newcar) {
         await newCar.deleteOne({ _id: newcar._id })
-        res.status(200).json({ message: 'Novo vozilo obrisano' })
+        res.status(200).json({ message: 'New car deleted successfully' })
     } else {
         res.status(404);
-        throw new Error('Resurs nije pronađen');
+        throw new Error('Resource not found');
     }
 });
 
 
+/* ----------------------------USEDCARS CONTROLLER: ------------------------------- */
 
 
 
-
-
-
-
+// @desc gets all of the new cars
+// @route GET /api/usedcars
+// @acces public
 const getUsedCars = asyncHandler (async (req, res) => {
     const usedCars = await usedCar.find({});
     res.json(usedCars);
 });
 
 
+
+//@desc gets a (used) car with specified id
+//@route GET /api/usedcars/:id
+//@access public
 const getUsedCarById = asyncHandler (async (req, res) => {
     const theUsedCar = await usedCar.findById(req.params.id);
 
@@ -112,7 +116,7 @@ const getUsedCarById = asyncHandler (async (req, res) => {
     throw new Error('Rabljeno vozilo nije pronađeno');
 });
 
-//@desc     Dodaj novo rabljeno vozilo (admin)
+//@desc     add a used car (admin)
 //@route    POST /api/usedcars
 //@access   admin
 const createUsedCar = asyncHandler (async (req, res) => {
@@ -134,9 +138,9 @@ const createUsedCar = asyncHandler (async (req, res) => {
     res.status(201).json(createdUsedCar);
 });
 
-// @desc Ažuriranje rabljenog vozila
+// @desc update used car
 // @route PUT /api/usedcars/:id
-// @acces private/admin
+// @acces admin
 const updateUsedCar = asyncHandler (async (req, res) => {
     const { model, brand, price, numOfOwners, mileage, description, image, makeYear, motor, transmission} = req.body;
 
@@ -159,13 +163,13 @@ const updateUsedCar = asyncHandler (async (req, res) => {
         res.json(updatedUsedCar);
     } else {
         res.status(404);
-        throw new Error('Resurs nije pronađen');
+        throw new Error('Resource not found');
     }
 });
 
 
-// @desc Brisanje rabljenog vozila
-// @route DELETE /api/newcars/:id
+// @desc Delete a used car
+// @route DELETE /api/usedcars/:id
 // @acces private/admin
 const deleteUsedCar = asyncHandler (async (req, res) => {
 
@@ -173,10 +177,10 @@ const deleteUsedCar = asyncHandler (async (req, res) => {
 
     if (usedcar) {
         await usedCar.deleteOne({ _id: usedcar._id })
-        res.status(200).json({ message: 'Novo vozilo obrisano' })
+        res.status(200).json({ message: 'Used car successfully deleted' })
     } else {
         res.status(404);
-        throw new Error('Resurs nije pronađen');
+        throw new Error('Resource not found');
     }
 });
 

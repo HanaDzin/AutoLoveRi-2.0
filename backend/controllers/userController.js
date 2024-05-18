@@ -3,13 +3,13 @@ import User from '../models/userModel.js'
 import generateToken from "../utils/generateToken.js";
 
 
-// @desc autentifikacija korisnika i uzimanje tokena
+// @desc user authentication & token production
 // @route POST /api/users/auth
 // @acces public
 const authUser = asyncHandler (async (req, res) => {
     const { email, password } = req.body;
 
-    //provjeri da li postoji korisnik sa tim email-om u bazi:
+    //check if user with that email already exists:
     const user = await User.findOne({  email });
 
     if (user && (await user.matchPassword(password))) { 
@@ -28,7 +28,7 @@ const authUser = asyncHandler (async (req, res) => {
 
 });
 
-// @desc registracija korisnika
+// @desc user registration
 // @route POST /api/users
 // @acces public
 const registerUser = asyncHandler (async (req, res) => {
@@ -39,7 +39,7 @@ const registerUser = asyncHandler (async (req, res) => {
         res.status(400);
         throw new Error('Korisnik već postoji!');
     } 
-    //kreiraj korisnika pomocu podataka koji stizu iz forme
+    //create a new user using data sent in from input form
     const user = await User.create({
         name,
         email,
@@ -57,19 +57,19 @@ const registerUser = asyncHandler (async (req, res) => {
         });
     } else {
         res.status(400);
-        throw new Error('Neispravni korisnički podaci')
+        throw new Error('Invalid user data')
     }
 });
 
-// @desc Odjava (logout) korisnika / brisanje cookie-a
+// @desc logs out the user & deletes the cookie
 // @route POST /api/users/logout
 // @acces private
 const logoutUser = (req, res) => {
     res.clearCookie('jwt');
-    res.status(200).json({ message: 'Uspješna odjava!' });
+    res.status(200).json({ message: 'Logged out successfully' });
   };
 
-// @desc dohvati profil korisnika
+// @desc gets users profile by id
 // @route GET /api/users/profile
 // @acces private
 const getUserProfile = asyncHandler (async (req, res) => {
@@ -84,11 +84,11 @@ const getUserProfile = asyncHandler (async (req, res) => {
         });
    } else {
     res.status(404);
-    throw new Error('Korisnik nije pronađen');
+    throw new Error('User not found');
    }
 });
 
-// @desc ažuriranje profil korisnika
+// @desc updates user profile
 // @route PUT /api/users/profile 
 // @acces private
 const updateUserProfile = asyncHandler (async (req, res) => {
@@ -113,12 +113,12 @@ const updateUserProfile = asyncHandler (async (req, res) => {
         });
     } else {
         res.status(404);
-        throw new Error('Korisnik se ne može ažurirati jer ne postoji');
+        throw new Error('User not found - cannot be updated');
     }
     
 });
 
-// @desc dohvat svih korisnika (može samo admin)
+// @desc get all user (only admin sees)
 // @route GET /api/users
 // @acces private/admin
 const getUsers = asyncHandler (async (req, res) => {
@@ -126,7 +126,7 @@ const getUsers = asyncHandler (async (req, res) => {
     res.status(200).json(users);
 });
 
-// @desc Dohvat određenog korisnika
+// @desc get user by id
 // @route GET /api/users/:id
 // @acces private/admin
 const getUserById = asyncHandler (async (req, res) => {
@@ -136,33 +136,33 @@ const getUserById = asyncHandler (async (req, res) => {
         res.status(200).json(user);
     } else {
         res.status(404);
-        throw new Error('Korisnik nije pronađen');
+        throw new Error('User not found');
     }
 
 });
 
-// @desc brisanje korisnika
+// @desc delete a user (only admin)
 // @route DELETE /api/users/:id
 // @acces private/admin
 const deleteUser = asyncHandler (async (req, res) => {
     const user = await User.findById(req.params.id);
 
     if (user) {
-        //osiguravanje da se ne može pobrisati admin
+        //make sure admin cannot be deleted
         if (user.isAdmin) {
             res.status(400);
-            throw new Error ('Ne može se obrisati admin')
+            throw new Error ('Cannot delete admin user')
         }
 
         await User.deleteOne({ _id: user._id })
-        res.status(200).json( {message: 'Uspješno obrisan korisnik'} )
+        res.status(200).json( {message: 'Successfully delete user'} )
     } else {
         res.status(404);
-        throw new Error('Korisnik nije pronađen')
+        throw new Error('User not found')
     }
 });
 
-// @desc Ažuriranje korisnika (admin)
+// @desc update user (admin)
 // @route PUT /api/users/:id
 // @acces private/admin
 const updateUser = asyncHandler (async (req, res) => {
@@ -183,7 +183,7 @@ const updateUser = asyncHandler (async (req, res) => {
     });
     } else {
         res.statuds(404);
-        throw new Error('Korisnik nije pronađen')
+        throw new Error('User not found')
     }
 });
 

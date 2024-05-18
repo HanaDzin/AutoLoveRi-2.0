@@ -21,11 +21,12 @@ const port = process.env.PORT || 5000;
 
 connectDB();
 
+//initializes an Express app
 const app = express();
 
 //body parser middleware
-app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+app.use(express.json());                         
+app.use(express.urlencoded({extended: true}));    
 
 //cookie parser middleware:
 app.use(cookieParser());
@@ -37,7 +38,6 @@ app.use(cors({
 }));
 
 
-
 app.use('/api', CarsRoutes);
 app.use('/api/users', UserRoutes);
 app.use('/api/orders', OrderRoutes);
@@ -47,6 +47,8 @@ app.use ('/api/reviews', reviewRoutes);
 //paypal
 app.get('/api/config/paypal', (req, res) => res.send({ clientId: procces.env.PAYPAL_CLIENT_ID}));
 
+
+//multer (uploading car pictures) setup code
 if (process.env.NODE_ENV === 'production') {
   const __dirname = path.resolve();
   app.use('/uploads', express.static('/var/data/uploads'));
@@ -65,12 +67,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 
-
-
-
-
- 
-//kreirani middleware za potencijalne pogreške:
+//custom made middleware for potential errors:
 app.use(notFound);
 app.use(errorHandler);
 
