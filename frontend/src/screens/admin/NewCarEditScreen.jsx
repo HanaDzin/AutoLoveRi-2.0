@@ -85,7 +85,7 @@
 
     return ( <>
             <FormContainer>
-            <div className="px-20 mt-20 dark:text-white mt-8 text-center text-2xl font-bold text-gray-900">
+            <div className="px-20 mt-20 dark:text-white text-center text-2xl font-bold text-gray-900">
             <h1 className=' text-3xl dark:text-primary text-left mb-6 mt-6'>Ažuriraj vozilo</h1>
             </div>
 

@@ -38,7 +38,7 @@ const submitHandler = (e) => {
 
   return (
     <FormContainer>
-        <div className="px-20 mt-16 dark:text-white mt-8 text-center text-2xl font-bold text-gray-900">
+        <div className="px-20 mt-16 dark:text-white text-center text-2xl font-bold text-gray-900">
         <CheckoutSteps step1 step2 />
             <h1 className='mt-10 text-3xl'>Isporuka</h1>
           </div>

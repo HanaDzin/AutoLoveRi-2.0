@@ -44,6 +44,7 @@ import UserListScreen from './screens/admin/UserListScreen.jsx'
 import UserEditScreen from './screens/admin/UserEditScreen.jsx'
 import ProfileScreen from './screens/admin/ProfileScreen.jsx'
 import ArticleScreen from './screens/ArticleScreen.jsx'
+import AdminChatScreen from './screens/AdminChatScreen.jsx'
 
 
 
@@ -65,6 +66,8 @@ const router = createBrowserRouter(
 
       <Route path='/news' element={<NewsScreen/>} />;
       <Route path='/article' element={<ArticleScreen/>} />;
+
+      <Route path='/messages' element={<AdminChatScreen/>} />;
     
 
       <Route path='/login' element={<LoginScreen/>} />;

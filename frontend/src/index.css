@@ -5,9 +5,6 @@
 @tailwind utilities;
 
 
-
-
-
 @layer components {
     .button-outline {
         @apply rounded-md
@@ -22,4 +19,19 @@
 
 * {
     font-family: 'Atkinson Hyperlegible', sans-serif;
+}
+/*custom made scrollbar*/
+::-webkit-scrollbar {
+    cursor: pointer;
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    cursor: pointer;
+    background: #eae3dd8d;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    background: #fbdc29;
 }

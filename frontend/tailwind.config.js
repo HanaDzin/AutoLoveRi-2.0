@@ -5,8 +5,9 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: "#ffc727",
-        dark: "#111111",
+        'primary': "#ffc727",
+        'inputColor' : '#ff9800',
+        'dark': "#111111",
       },
       container: {
         center: true,
@@ -18,6 +19,8 @@ export default {
 
     },
   },
-  plugins: [],
+  plugins: [
+    require('daisyui'),
+  ],
 }
 

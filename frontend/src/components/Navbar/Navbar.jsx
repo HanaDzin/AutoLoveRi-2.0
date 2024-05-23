@@ -3,12 +3,10 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import {Badge} from 'react-bootstrap'
 
-import { useLogoutMutation } from '../../slices/usersApiSlice.js'
-import { logout } from '../../slices/authSlice.js'
-
 import {BiSolidMoon, BiSolidSun} from 'react-icons/bi'
 import {HiMenuAlt1, HiMenuAlt3} from 'react-icons/hi'
 import { FaRegHeart, FaUser } from "react-icons/fa";
+import { IoChatboxEllipsesOutline } from "react-icons/io5";
 
 //mobile responsive menu
 import ResponsiveMenu from './ResponsiveMenu.jsx'
@@ -41,14 +39,13 @@ export const NavLinks = [
 
 const Navbar = ({theme, setTheme}) => {
 
-//responsive menu za manje ekrane
+//responsive menu for smaller screens
 const [showMenu, setShowMenu] = useState(false);
 
 const toggleMenu = () => {
     setShowMenu(!showMenu);
 }
-
-//azuriranje wishlist-a/carta s brojem odabranih vozila
+//to use when updating wishlist with num of selected vehicles
 const { cartItems } = useSelector( (state) => state.cart);
 const { userInfo } = useSelector( (state) => state.auth);
 
@@ -68,55 +65,63 @@ const { userInfo } = useSelector( (state) => state.auth);
                     NavLinks.map((data) => (
                     
                         <Link to={data.link}>
-                        <div key={data._id} className='py-4'>
-                            <a className='py-2 
-                            hover:border-b-2 
-                            hover:text-primary
-                            hover:border-primary
-                            transition-colors duration-300
-                            text-md font-medium' 
-                            >{data.name}</a>
-                        </div>
+                            <div key={data._id} className='py-4'>
+                                <a className='py-2 
+                                hover:border-b-2 
+                                hover:text-primary
+                                hover:border-primary
+                                transition-colors duration-300
+                                text-md font-medium' 
+                                >{data.name}</a>
+                            </div>
                         </Link>
                     ))}
-                    <div className='flex items-center'>
+
+                <div className='flex items-center'>
                     <Link to='/cart' className='flex items-center'>
-                    <FaRegHeart className='text-2xl' />
+                        <FaRegHeart className='text-2xl' />
+                        {
+                            cartItems.length > 0 && (
+                            <Badge className='ml-2' pill bg='success'>
+                                {cartItems.reduce((a, c) =>  a + c.qty, 0)}
+                            </Badge>
+                            )
+                        }
+                    </Link>
+
+                    {userInfo && userInfo.isAdmin && (
+                        <div className='flex items-center'>
+                            <Link to='/messages' className='flex items-center'>
+                                <IoChatboxEllipsesOutline className='text-2xl ml-5' />
+                             </Link>
+                        </div>
+                    )}
+                    
+    
+                </div>                   
                     {
-                        cartItems.length > 0 && (
-                        <Badge className='ml-2' pill bg='success'>
-                            {cartItems.reduce((a, c) =>  a + c.qty, 0)}
-                        </Badge>
+                        userInfo ? (<Dropdown></Dropdown>
+                        ) : (
+                        <div className='flex items-center'>
+                            <FaUser className='mr-2'/><Link to='/login'>Prijavi se</Link></div>
                         )
                     }
-                    </Link>
-                    </div>
-                    
-                        {
-                            userInfo ? (<Dropdown></Dropdown>
-                            ) : (
-                                <div className='flex items-center'>
-                                <FaUser className='mr-2'/><Link to='/login'>Prijavi se</Link></div>
-                            )
-
-                        }
-
                         
-                    
-                    <div>
-                {
+                <div>
+                    {
                         theme == "dark" ? 
                         (<BiSolidSun onClick={() => setTheme("light")}
                         className='text-2xl'/>) : 
                         (<BiSolidMoon onClick={() => setTheme("dark")} 
                         className='text-2xl'/> )
-                } 
+                    } 
                 </div>
                 </ul>
             </div>
-                <div className='flex items-center gap-4 md:hidden'>
+            
+            <div className='flex items-center gap-4 md:hidden'>
                 <div>
-                {
+                    {
                         theme == "dark" ? 
                         (<BiSolidSun onClick={() => setTheme("light")}
                         className='text-2xl'/>) : 
