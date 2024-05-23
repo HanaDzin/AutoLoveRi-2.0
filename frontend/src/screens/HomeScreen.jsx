@@ -7,9 +7,10 @@ import Testimonials  from '../components/Testimonials/Testimonials';
 import { useOutletContext } from 'react-router-dom';
 import NewCarsSelection from '../components/CarSelections/NewCarsSelection';
 import { Link } from 'react-router-dom';
+import UserPopUpChat from '../components/chat/UserPopUpChat';
 
 const HomeScreen = () => {
-    //bez ovoga se ne mijenja slika kod promjene teme
+    //so the hero picture changes depending on dark/light theme
     const theme = useOutletContext();
     
   return (
@@ -32,6 +33,8 @@ const HomeScreen = () => {
             </div>
 
         <Testimonials />
+
+        <UserPopUpChat />
     </div>
   )
 }
