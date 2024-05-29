@@ -1,7 +1,9 @@
 import React, {useState} from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { useSelector, useDispatch } from 'react-redux'
+import { Link } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 import {Badge} from 'react-bootstrap'
+
+import { useAuthContext } from '../../context/AuthContext.jsx'
 
 import {BiSolidMoon, BiSolidSun} from 'react-icons/bi'
 import {HiMenuAlt1, HiMenuAlt3} from 'react-icons/hi'
@@ -28,11 +30,6 @@ export const NavLinks = [
         name: "O nama",
         link: "/about"
     },
-    {
-        _id: "4",
-        name: "Novosti",
-        link: "/news"
-    }
 ]
 
 
@@ -47,7 +44,7 @@ const toggleMenu = () => {
 }
 //to use when updating wishlist with num of selected vehicles
 const { cartItems } = useSelector( (state) => state.cart);
-const { userInfo } = useSelector( (state) => state.auth);
+const { authUser } = useAuthContext();
 
   return (
     
@@ -89,7 +86,7 @@ const { userInfo } = useSelector( (state) => state.auth);
                         }
                     </Link>
 
-                    {userInfo && userInfo.isAdmin && (
+                    {authUser && authUser.isAdmin  && (
                         <div className='flex items-center'>
                             <Link to='/messages' className='flex items-center'>
                                 <IoChatboxEllipsesOutline className='text-2xl ml-5' />
@@ -100,7 +97,7 @@ const { userInfo } = useSelector( (state) => state.auth);
     
                 </div>                   
                     {
-                        userInfo ? (<Dropdown></Dropdown>
+                        authUser ? (<Dropdown></Dropdown>
                         ) : (
                         <div className='flex items-center'>
                             <FaUser className='mr-2'/><Link to='/login'>Prijavi se</Link></div>

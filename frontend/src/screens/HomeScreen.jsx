@@ -1,4 +1,5 @@
 import React from 'react'
+import io from 'socket.io-client';
 
 import Hero from '../components/Hero/Hero'
 import Services from '../components/Services/Services';
@@ -8,6 +9,7 @@ import { useOutletContext } from 'react-router-dom';
 import NewCarsSelection from '../components/CarSelections/NewCarsSelection';
 import { Link } from 'react-router-dom';
 import UserPopUpChat from '../components/chat/UserPopUpChat';
+
 
 const HomeScreen = () => {
     //so the hero picture changes depending on dark/light theme

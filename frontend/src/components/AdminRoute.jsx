@@ -1,11 +1,10 @@
 import React from 'react'
 import { Outlet, Navigate } from 'react-router-dom'
-import { useSelector } from 'react-redux'
-
+import {useAuthContext} from '../context/AuthContext'
 
 const AdminRoute = () => {
-    const { userInfo } = useSelector(state => state.auth)
-  return userInfo && userInfo.isAdmin ? <Outlet /> : <Navigate to='/login' replace />
+    const { authUser } = useAuthContext();
+  return authUser && authUser.isAdmin ? <Outlet /> : <Navigate to='/login' replace />
 }
 
 export default AdminRoute

@@ -1,13 +1,10 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
 import FormContainer from '../components/formContainer/formContainer'
 
-import { useRegisterMutation } from '../slices/usersApiSlice'
-import { setCredentials } from '../slices/authSlice'
-
-import { toast } from 'react-toastify'
+import useSignUp from '../../hooks/useSignUp'
+import { useAuthContext } from '../context/AuthContext'
 
 const RegisterScreen = () => {
     const [name, setName] = useState('');
@@ -16,38 +13,27 @@ const RegisterScreen = () => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
 
-    const dispatch = useDispatch();
+   
+    const { loading, signUp} = useSignUp();
+    const { authUser } = useAuthContext();
+
+
     const navigate = useNavigate();
-
-    const [register, {isLoading}] = useRegisterMutation();
-
-    const { userInfo } = useSelector((state) => state.auth);
 
     const { search } = useLocation();
     const sp = new URLSearchParams(search);
     const redirect = sp.get('redirect') || '/';
 
     useEffect(() => {
-        if (userInfo) {
+        if (authUser) {
             navigate(redirect);
         }
-    }, [navigate, redirect, userInfo])
+    }, [navigate, redirect, authUser])
 
 
     const submitHandler = async (e) => {
         e.preventDefault();
-        if (password !== confirmPassword) {
-            toast.error('Lozinke se ne podudaraju!')
-        } else {
-            try {
-                const res = await register({ name, email, password }).unwrap();
-                dispatch(setCredentials({ ...res }));
-                navigate(redirect);
-        
-               } catch (err) {
-                toast.error(err?.data?.message || err.error)
-               }
-        }
+        await signUp(name, email, password, confirmPassword)
     };
   return (
     <FormContainer>

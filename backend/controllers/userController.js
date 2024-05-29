@@ -22,8 +22,7 @@ const authUser = asyncHandler (async (req, res) => {
             isAdmin: user.isAdmin,
         });
     } else {
-        res.status(401);        //unauthorized
-        throw new Error('Neispravan email ili lozinka');
+        res.status(401).json({ message: 'Neispravan email ili lozinka' });
     }
 
 });
@@ -104,7 +103,6 @@ const updateUserProfile = asyncHandler (async (req, res) => {
         }
 
         const updatedUser = await user.save();
-
         res.status(200).json({
             _id: updatedUser._id,
             name: updatedUser.name,

@@ -1,45 +1,38 @@
-import React from 'react'
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
+import { toast } from 'react-toastify';
+
 import FormContainer from '../components/formContainer/formContainer'
 
-import { useLoginMutation } from '../slices/usersApiSlice'
-import { setCredentials } from '../slices/authSlice'
-
-import { toast } from 'react-toastify'
+import useLogin from '../../hooks/useLogin';
+import { useAuthContext } from '../context/AuthContext';
 
 const LoginScreen = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const dispatch = useDispatch();
+    const { loading, login} = useLogin();
+    const { authUser } = useAuthContext();
+
     const navigate = useNavigate();
-
-    const [login, {isLoading}] = useLoginMutation();
-
-    const { userInfo } = useSelector((state) => state.auth);
-
     const { search } = useLocation();
     const sp = new URLSearchParams(search);
     const redirect = sp.get('redirect') || '/';
 
     useEffect(() => {
-        if (userInfo) {
+        if (authUser) {
             navigate(redirect);
         }
-    }, [navigate, redirect, userInfo])
+    }, [navigate, redirect, authUser, email])
 
     const submitHandler = async (e) => {
         e.preventDefault();
-       try {
-        const res = await login({ email, password }).unwrap();
-        dispatch(setCredentials({ ...res }));
+        try {
+        await login(email, password);
         navigate(redirect);
-
-       } catch (err) {
-        toast.error(err?.data?.message || err.error)
-       }
+        } catch (err) {
+          toast.error(err.message);
+         }
     };
   return (
     <FormContainer>
@@ -90,7 +83,7 @@ const LoginScreen = () => {
                 type="submit"
                 className="flex w-full justify-center rounded-md bg-indigo-600 mt-10 px-4 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
-                Prijava
+                 { loading ? <span className="loading loading-spinner"></span> : "Prijavi se"}
               </button>
             </div>
           </form>

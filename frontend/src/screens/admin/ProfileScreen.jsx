@@ -1,10 +1,11 @@
 import React from 'react'
 import {useState, useEffect} from 'react'
-import {useDispatch, useSelector} from 'react-redux'
-import { toast } from 'react-toastify'
+import { toast } from 'react-toastify';
+
+import { useAuthContext } from '../../context/AuthContext';
 import { useProfileMutation } from '../../slices/usersApiSlice'
-import { useGetMyOrdersQuery } from '../../slices/ordersApiSlice'
-import { setCredentials } from '../../slices/authSlice'
+
+
 
 const ProfileScreen = () => {
 
@@ -13,37 +14,33 @@ const ProfileScreen = () => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
 
-    const dispatch = useDispatch();
+  const { authUser, setAuthUser } = useAuthContext();
 
-    const { userInfo } = useSelector((state) => state.auth);
-
-    const [updateProfile, {isLoading: loadingUpdateProfile}] = useProfileMutation();
-
-
+  const [updateProfile, {isLoading: loadingUpdateProfile}] = useProfileMutation();
 
     useEffect(() => {
-        if (userInfo) {
-            setName(userInfo.name);
-            setEmail(userInfo.email);
+        if (authUser) {
+            setName(authUser.name);
+            setEmail(authUser.email);
         }
-    }, [ userInfo.name, userInfo.email]);
+    }, [ authUser.name, authUser.email]);
 
     const submitHandler = async (e) => {
         e.preventDefault();
-        
-        if (password !== confirmPassword) {
-            toast.error('Lozinke se ne podudaraju');
-        } else {
-            try {
-                const res = await updateProfile({ _id:userInfo._id, name, email, password }).unwrap();
-                dispatch(setCredentials(res));
-                toast.success('Profil uspješno ažuriran');
-
-            } catch (err) {
-                toast.error(err?.data?.message || err.error);
-            }
-        }
-
+          
+          if (password !== confirmPassword) {
+              toast.error('Lozinke se ne podudaraju');
+          } else {
+              try {
+                  const updatedUser  = await updateProfile({ _id:authUser._id, name, email, password }).unwrap();
+                  localStorage.setItem('userInfo', JSON.stringify(updatedUser));
+                  setAuthUser(updatedUser); 
+                  toast.success('Profil uspješno ažuriran');
+                  
+              } catch (err) {
+                  toast.error(err?.data?.message || err.error);
+              }
+          }
     }
 
 

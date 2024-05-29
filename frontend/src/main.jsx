@@ -2,6 +2,8 @@ import React, { useEffect } from 'react'
 import ReactDOM from 'react-dom/client'
 import './index.css'
 
+import { AuthContextProvider } from './context/AuthContext.jsx'
+
 import PrivateRoute from './components/PrivateRoute.jsx'
 
 import {
@@ -26,10 +28,9 @@ import NewCarDetailsScreen from './screens/NewCarDetailsScreen.jsx'
 import NewCarsScreen from './screens/NewCarsScreen.jsx'
 import UsedCarsScreen from './screens/UsedCarsScreen.jsx'
 import AboutUsScreen from './screens/AboutUsScreen.jsx'
-import NewsScreen from './screens/NewsScreen.jsx'
 import UsedCarDetailsScreen from './screens/UsedCarDetailsScreen.jsx'
 import CartScreen from './screens/CartScreen.jsx'
-import LoginScreen from './screens/loginScreen.jsx'
+import LoginScreen from './screens/LoginScreen.jsx'
 import RegisterScreen from './screens/RegisterScreen.jsx'
 import ShippingScreen from './screens/ShippingScreen.jsx'
 import PaymentScreen from './screens/PaymentScreen.jsx'
@@ -64,7 +65,6 @@ const router = createBrowserRouter(
 
       <Route path='/about' element={<AboutUsScreen/>} />;
 
-      <Route path='/news' element={<NewsScreen/>} />;
       <Route path='/article' element={<ArticleScreen/>} />;
 
       <Route path='/messages' element={<AdminChatScreen/>} />;
@@ -103,9 +103,11 @@ const router = createBrowserRouter(
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <Provider store={store}>
+    <AuthContextProvider>
     <PayPalScriptProvider deferLoading={ false }>
       <RouterProvider router={router} />
       </PayPalScriptProvider>
+      </AuthContextProvider>
     </Provider>
   </React.StrictMode>,
 )
