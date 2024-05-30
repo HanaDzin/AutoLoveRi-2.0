@@ -2,6 +2,7 @@ import path from 'path'
 import express from 'express';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
+import { app, server } from './socket/socket.js'
 
 dotenv.config();
 
@@ -22,8 +23,6 @@ const port = process.env.PORT || 5000;
 
 connectDB();
 
-//initializes an Express app
-const app = express();
 
 //body parser middleware
 app.use(express.json());                         
@@ -75,4 +74,4 @@ app.use(errorHandler);
 
 
 
-app.listen(port, () => console.log(`Server port ${port}`));
+server.listen(port, () => console.log(`Server port ${port}`));

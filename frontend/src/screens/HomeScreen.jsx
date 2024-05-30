@@ -10,10 +10,13 @@ import NewCarsSelection from '../components/CarSelections/NewCarsSelection';
 import { Link } from 'react-router-dom';
 import UserPopUpChat from '../components/chat/UserPopUpChat';
 
+import {useAuthContext} from '../context/AuthContext';
+
 
 const HomeScreen = () => {
     //so the hero picture changes depending on dark/light theme
     const theme = useOutletContext();
+    const { authUser } = useAuthContext();
     
   return (
     <div>
@@ -35,8 +38,9 @@ const HomeScreen = () => {
             </div>
 
         <Testimonials />
-
-        <UserPopUpChat />
+        
+        { authUser && !authUser.isAdmin && <UserPopUpChat />}
+        
     </div>
   )
 }

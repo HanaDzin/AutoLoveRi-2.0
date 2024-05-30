@@ -1,18 +1,20 @@
 import jwt from "jsonwebtoken";
 
-const generateToken = (res, userId) => {
-    //kreiranje jwt koji u sebi sadrži id korisnika (to je payload)
-    const token = jwt.sign({ userId }, process.env.JWT_SECRET, {
-        expiresIn: '30d'
-    });
+const generateTokenAndSetCookie = (userId, res) => {
+    //userId = payload (digital signature - how a token get assigned & recognized - gets embedded into the token)
+    const token = jwt.sign({userId}, process.env.JWT_SECRET, {
+        expiresIn: '30d',
+    })
 
-//postavi JWT kao HTTP-Only Cookie
-    res.cookie('jwt', token, {
+    //set this token as a cookie named "jwt"
+    res.cookie("jwt", token, {
+        maxAge: 30 * 24 * 60 * 60 * 1000,       //30d in ms
         httpOnly: true,
-        secure: process.env.NODE_ENV !== 'development',
-        sameSite: 'strict',
-        maxAge: 30 * 24 * 60 * 60 * 1000,       
-    });
+        sameSite: "strict",
+        secure: process.env.NODE_ENV !== "development"
+    })
+
+    console.log(token);
 }
 
-export default generateToken;
+    export default generateTokenAndSetCookie;

@@ -1,6 +1,6 @@
 import asyncHandler from "../middleware/asyncHandler.js";
 import User from '../models/userModel.js'
-import generateToken from "../utils/generateToken.js";
+import generateTokenAndSetCookie from "../utils/generateToken.js";
 
 
 // @desc user authentication & token production
@@ -13,7 +13,8 @@ const authUser = asyncHandler (async (req, res) => {
     const user = await User.findOne({  email });
 
     if (user && (await user.matchPassword(password))) { 
-        generateToken(res, user._id);
+        generateTokenAndSetCookie(user._id, res);
+
 
         res.status(200).json({
             _id: user._id,
@@ -36,7 +37,7 @@ const registerUser = asyncHandler (async (req, res) => {
     const userExists = await User.findOne({ email });
     if (userExists) {
         res.status(400);
-        throw new Error('Korisnik već postoji!');
+        throw new Error('Korisnik već postoji');
     } 
     //create a new user using data sent in from input form
     const user = await User.create({
@@ -46,7 +47,7 @@ const registerUser = asyncHandler (async (req, res) => {
     });
 
     if (user) {
-        generateToken(res, user._id);
+        generateTokenAndSetCookie(user._id, res);
 
         res.status(201).json({
             _id: user._id,
@@ -56,7 +57,7 @@ const registerUser = asyncHandler (async (req, res) => {
         });
     } else {
         res.status(400);
-        throw new Error('Invalid user data')
+        throw new Error('Neispravni korisnički podaci')
     }
 });
 
@@ -64,9 +65,18 @@ const registerUser = asyncHandler (async (req, res) => {
 // @route POST /api/users/logout
 // @acces private
 const logoutUser = (req, res) => {
-    res.clearCookie('jwt');
-    res.status(200).json({ message: 'Logged out successfully' });
-  };
+    try {
+        res.cookie("jwt", "", {             //clear the cookie
+            maxAge: 0
+        });
+
+        res.status(500).json({ message: "Uspješna odjava"})
+
+    } catch (error) {
+        console.log("Error in login controller", error.message);
+        res.status(500).json({ error: "Internal server error!"});
+    }
+}
 
 // @desc gets users profile by id
 // @route GET /api/users/profile
