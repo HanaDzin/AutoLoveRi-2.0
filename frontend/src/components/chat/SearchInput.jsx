@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 
 import { IoSearchSharp } from "react-icons/io5";
+import { useConversation } from "../../context/ConversationContext";
 
 
 const SearchInput = () => {
+	const [search, setSearch] = useState("");
+	const { setSelectedConversation } = useConversation();
 	
 	return (
 		<form className='flex items-center gap-2'>

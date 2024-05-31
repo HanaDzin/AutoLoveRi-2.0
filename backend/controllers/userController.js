@@ -134,6 +134,19 @@ const getUsers = asyncHandler (async (req, res) => {
     res.status(200).json(users);
 });
 
+// @desc get all users for sidebar in admin chat
+// @route GET /api/users/sidebar/:id
+// @acces private/admin
+const getUsersForSidebar = asyncHandler (async (req, res) => {
+    //obtain the admin id from request:
+    const adminId = req.params.id;
+
+     //get users from database (besides the one currently logged in):
+    const allUsers = await User.find({ _id: { $ne: adminId }}).select("-password");
+
+    res.status(200).json(allUsers);
+});
+
 // @desc get user by id
 // @route GET /api/users/:id
 // @acces private/admin
@@ -201,7 +214,8 @@ export { authUser,
     getUserProfile, 
     getUserById, 
     updateUserProfile, 
-    getUsers, 
+    getUsers,
+    getUsersForSidebar, 
     deleteUser, 
     updateUser} 
 

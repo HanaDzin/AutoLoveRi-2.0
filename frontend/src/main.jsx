@@ -3,7 +3,8 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 
 import { AuthContextProvider } from "./context/AuthContext.jsx";
-import { SocketContextProvider} from './context/SocketContext.jsx'
+import { SocketContextProvider } from "./context/SocketContext.jsx";
+import { ConversationProvider } from "./context/ConversationContext.jsx";
 
 import PrivateRoute from "./components/PrivateRoute.jsx";
 
@@ -47,6 +48,7 @@ import ProfileScreen from "./screens/admin/ProfileScreen.jsx";
 import ArticleScreen from "./screens/ArticleScreen.jsx";
 import AdminChatScreen from "./screens/AdminChatScreen.jsx";
 
+
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
@@ -86,9 +88,11 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <Provider store={store}>
       <AuthContextProvider>
         <SocketContextProvider>
-          <PayPalScriptProvider deferLoading={false}>
-            <RouterProvider router={router} />
-          </PayPalScriptProvider>
+          <ConversationProvider>
+            <PayPalScriptProvider deferLoading={false}>
+              <RouterProvider router={router} />
+            </PayPalScriptProvider>
+          </ConversationProvider>
         </SocketContextProvider>
       </AuthContextProvider>
     </Provider>
