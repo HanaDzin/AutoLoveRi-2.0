@@ -2,17 +2,17 @@ import React, { useState } from 'react'
 import { toast } from 'react-toastify';
 
 import { useAuthContext } from '../src/context/AuthContext'
-import useConversation from '../src/context/ConversationContext'
+import {useConversation} from '../src/context/ConversationContext'
 
 const useSendMessage = () => {
-
+    const [loading, setLoading] = useState(false);
     const { authUser } = useAuthContext();
     const { messages, setMessages, selectedConversation} = useConversation();
 
   const sendMessage = async (message) => {
     setLoading(true);
     try {
-        const res = await fetch(`http://localhost:5000/api/messages/send/${authUser._id}/to/:${selectedConversation._id}`, {
+        const res = await fetch(`http://localhost:5000/api/messages/send/${authUser._id}/to/${selectedConversation._id}`, {
             method: 'POST',
             headers: {
                 'Content-Type' : 'application/json'

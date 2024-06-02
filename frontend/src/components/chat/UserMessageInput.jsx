@@ -1,17 +1,17 @@
 import React, { useState } from "react";
 
 import { BsSend } from "react-icons/bs";
-import useSendMessage from "../../../hooks/useSendMessage";
+import useSendMessageToAdmin from "../../../hooks/useSendMessageToAdmin";
 
 const MessageInput = () => {
 	const [message, setMessage] = useState("");
-	const { loading, sendMessage} = useSendMessage();
+	const { loading, sendMessageToAdmin} = useSendMessageToAdmin();
 
 	const submitHandler = async (e) => {
 		e.preventDefault();
 
 		if (!message) return;		//so user can't spam empty messages
-		await sendMessage(message);
+		await sendMessageToAdmin(message);
 		setMessage("");
 
 

@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import whiteCar from '../../assets/whiteCar.png';
 import { IoClose } from "react-icons/io5";
 
-import MessageInput from './MessageInput';
-import Messages from './Messages';
+import UserMessageInput from './UserMessageInput';
+import UserMessages from './UserMessages';
 
 const UserChatWindow = (props) => {
     const [visible, setVisible] = useState(true);
@@ -28,8 +28,8 @@ const UserChatWindow = (props) => {
                             <IoClose className='text-3xl' />
                         </button>
                     </div>
-                    <Messages />
-                    <MessageInput/>
+                    <UserMessages />
+                    <UserMessageInput/>
                 </div>
                 
             </>)}
