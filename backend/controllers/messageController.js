@@ -1,6 +1,8 @@
 import Conversation from "../models/conversationModel.js";
 import Message from "../models/messageModel.js";
 import User from "../models/userModel.js";
+import { getReceiverSocketId } from "../socket/socket.js";
+import { io } from "../socket/socket.js";
 
 export const sendMessage = async (req, res) => {
     try {
@@ -35,6 +37,14 @@ export const sendMessage = async (req, res) => {
 
         //save the message and conversation data in database (runs in parallel):
         await Promise.all([conversation.save(), newMessage.save()]);
+
+
+        //SOCKET.IO functionality
+        const receiverSocketId = getReceiverSocketId(receiverId);
+        if (receiverSocketId) {
+            //send an event only to this particular user:
+            io.to(receiverSocketId).emit("newMessage", newMessage);
+        }
 
         return res.status(201).json(newMessage); 
 
@@ -106,6 +116,13 @@ export const sendMessageToAdmin = async (req, res) => {
 
         // save the message and conversation data in the database (runs in parallel)
         await Promise.all([conversation.save(), newMessage.save()]);
+
+                //SOCKET.IO functionality
+                const receiverSocketId = getReceiverSocketId(receiverId);
+                if (receiverSocketId) {
+                    //send an event only to this particular user:
+                    io.to(receiverSocketId).emit("newMessage", newMessage);
+                }
 
         return res.status(201).json(newMessage);
 

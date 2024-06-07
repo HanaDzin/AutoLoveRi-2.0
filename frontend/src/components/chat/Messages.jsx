@@ -3,9 +3,13 @@ import Message from "./Message";
 import MessageSkeleton from "../skeletons/messageSkeleton";
 
 import useGetMessages from "../../../hooks/useGetMessages";
+import useListenMessages from "../../../hooks/useListenMessages";
 
 const Messages = () => {
   const { loading, messages } = useGetMessages();
+
+  //hook that listens for messages
+  useListenMessages();
 
   	//so that the most recent message is always visible (auto scroll to last msg when chat is opened)
 	const lastMessageRef = useRef();

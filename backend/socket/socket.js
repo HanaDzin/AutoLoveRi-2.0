@@ -12,6 +12,10 @@ const io = new Server(server, {             //socket.io server based on http
     }
 });
 
+export const getReceiverSocketId = (receiverId) => {
+    return userSocketMap[receiverId];
+};
+
 //key = userId, value = socketId
 const userSocketMap = {};
 
@@ -20,13 +24,14 @@ io.on('connection', (socket) => {
     //executes every time someone connects to server
     console.log("A user connected to: ", socket.id);
 
-    //since we updated the user-socket map, we emit the event to all connected clients:
-    io.emit("getOnlineUsers", Object.keys(userSocketMap));
 
     //catch the userId passed from context to save it into map:
     const userId = socket.handshake.query.userId;
-    if (userId != "undefined") {
+    if (userId && userId != "undefined") {
         userSocketMap[userId] = socket.id;
+
+        //since we updated the user-socket map, we emit the event to all connected clients:
+        io.emit("getOnlineUsers", Object.keys(userSocketMap));
     }
 
     //executes every time someone disconnects

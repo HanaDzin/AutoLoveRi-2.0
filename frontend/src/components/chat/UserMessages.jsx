@@ -2,10 +2,14 @@ import React, {useEffect, useRef} from "react";
 import Message from "./Message";
 import MessageSkeleton from "../skeletons/messageSkeleton";
 import useGetMessagesWithAdmin from "../../../hooks/useGetMessagesWithAdmin"
+import useListenMessages from "../../../hooks/useListenMessages";
 
 
 const UserMessages = () => {
     const { loading, messages } = useGetMessagesWithAdmin();
+
+    //hook that listens for messages
+    useListenMessages();
 
     // Ref to scroll to the last message
     const lastMessageRef = useRef();
