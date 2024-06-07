@@ -23,7 +23,7 @@ export const SocketContextProvider = ({ children }) => {
         useEffect(() => {
             if (authUser) {
                 const socket = io("http://localhost:5000", {
-                    query: {                                 //if user is authenticated, create new connection + pass his ID as query param
+                    query: {//if user is authenticated, create new connection + pass his ID as query param
                         userId: authUser._id
                     }
                 });

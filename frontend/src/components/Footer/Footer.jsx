@@ -68,11 +68,6 @@ const Footer = () => {
                         <span className='mr-2'> &#11162; </span>
                         <Link to={`/cars`}>Vozila</Link>
                     </li>
-                    <li className='cursor-pointer hover:text-primary duration-300'>
-                        <span className='mr-2'> &#11162; </span>
-                        <Link to={`/news`}>Novosti</Link>
-                    </li>
-
                     </ul>
                 </div>
             </div>
@@ -93,10 +88,6 @@ const Footer = () => {
                     <li className='cursor-pointer hover:text-primary duration-300'>
                         <span className='mr-2'> &#11162; </span>
                         <Link to={`/cars`}>Vozila</Link>
-                    </li>
-                    <li className='cursor-pointer hover:text-primary duration-300'>
-                        <span className='mr-2'> &#11162; </span>
-                        <Link to={`/news`}>Novosti</Link>
                     </li>
 
                     </ul>

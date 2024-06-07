@@ -10,13 +10,9 @@ const SearchInput = () => {
 	const [search, setSearch] = useState("");
 	const { setSelectedConversation } = useConversation();
 	const { conversations } = useGetConversations();
-	console.log(conversations)
 
 	const submitHandler = (e) => {
 		e.preventDefault();
-		console.log("Form submitted");
-		console.log("Search term:", search);
-		console.log("Conversations:", conversations);
 
 		if (!search) return;
 		if (search.length < 3) {
