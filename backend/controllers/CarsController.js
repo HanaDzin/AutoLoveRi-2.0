@@ -26,6 +26,22 @@ const getNewCarById = asyncHandler (async (req, res) => {
     throw new Error('New car not found');
 });
 
+// @desc gets all of the new cars sorted by price from lowest to highest
+// @route GET /api/newcars/sort/asc
+// @acces public
+const getNewCarsByPriceAsc = asyncHandler(async (req, res) => {
+    const newCars = await newCar.find({}).sort({ price: 1 });
+    res.json(newCars);
+});
+
+// @desc gets all of the new cars sorted by price from highest to lowest
+// @route GET /api/newcars/sort/asc
+// @acces public
+const getNewCarsByPriceDesc = asyncHandler(async (req, res) => {
+    const newCars = await newCar.find({}).sort({ price: -1 });
+    res.json(newCars);
+});
+
 //@desc     add a new car (admin)
 //@route    POST /api/newcars
 //@access   admin
@@ -186,10 +202,11 @@ const deleteUsedCar = asyncHandler (async (req, res) => {
 
 export {getNewCars, 
     getNewCarById,
+    getNewCarsByPriceAsc,
+    getNewCarsByPriceDesc,
     createNewCar,
     updateNewCar,
     deleteNewCar,
-
     getUsedCars, 
     getUsedCarById,
     createUsedCar,
