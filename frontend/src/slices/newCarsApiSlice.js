@@ -59,6 +59,24 @@ export const newCarsApiSlice = apiSlice.injectEndpoints({
       providesTags: ["NewCars"],
       keepUnusedDataFor: 5,
     }),
+    getNewCarBrands: builder.query({
+      query: () => ({
+        url: `${NEWCARS_URL}/brands`,
+      }),
+      providesTags: ["NewCarBrands"],
+      keepUnusedDataFor: 5,
+    }),
+    getModelsByBrand: builder.query({
+      query: (brand) => ({
+        url: `${NEWCARS_URL}/models/${brand}`, 
+      }),
+    }),
+    getFilteredCars: builder.query({
+      query: (filters) => ({
+        url: `${NEWCARS_URL}/filter`,
+        params: filters,
+      }),
+    }),
   }),
 });
 
@@ -71,4 +89,7 @@ export const {
   useUpdateNewCarMutation,
   useGetNewCarsByPriceAscQuery,
   useGetNewCarsByPriceDescQuery,
+  useGetNewCarBrandsQuery,
+  useGetModelsByBrandQuery,
+  useGetFilteredCarsQuery,
 } = newCarsApiSlice;

@@ -104,6 +104,46 @@ const deleteNewCar = asyncHandler (async (req, res) => {
     }
 });
 
+// @desc Get all car brands
+// @route GET /api/newcars/brands
+// @access Public
+const getNewCarBrands = asyncHandler(async (req, res) => {
+    const newCarBrands = await newCar.distinct('brand');
+    res.json(newCarBrands);
+});
+
+// @desc Get all car models of a selected brand
+// @route GET /api/newcars/:brand/models
+// @access Public
+const getNewCarsModelByBrands = asyncHandler(async (req, res) => {
+    const { brand } = req.params;
+    const models = await newCar.find({ brand }).distinct('model');
+    res.json(models);
+  });
+
+// @desc Gets all new cars with optional filtering
+// @route GET /api/newcars/filter
+// @access Public
+const getFilteredNewCars = asyncHandler(async (req, res) => {
+    const { brand, model, minPrice, maxPrice, minMakeYear, maxMakeYear, transmission, motor } = req.query;
+
+    let query = {};
+
+    //not any of the parameters is neccessary, only build the query with the selected ones
+    if (brand) query.brand = brand;
+    if (model) query.model = model;
+    if (minPrice) query.price = { ...query.price, $gte: Number(minPrice) }; 
+    if (maxPrice) query.price = { ...query.price, $lte: Number(maxPrice) }; 
+    if (minMakeYear) query.makeYear = { ...query.makeYear, $gte: Number(minMakeYear) };
+    if (maxMakeYear) query.makeYear = { ...query.makeYear, $lte: Number(maxMakeYear) };
+    if (transmission) query.transmission = transmission;
+    if (motor) query.motor = motor;
+
+    //returns the cars that match the query
+    const newFilteredCars = await newCar.find(query);    
+    res.json(newFilteredCars);
+});
+
 
 /* ----------------------------USEDCARS CONTROLLER: ------------------------------- */
 
@@ -207,6 +247,9 @@ export {getNewCars,
     createNewCar,
     updateNewCar,
     deleteNewCar,
+    getNewCarBrands,
+    getNewCarsModelByBrands,
+    getFilteredNewCars,
     getUsedCars, 
     getUsedCarById,
     createUsedCar,

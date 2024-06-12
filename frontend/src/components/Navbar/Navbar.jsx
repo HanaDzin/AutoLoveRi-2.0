@@ -22,8 +22,13 @@ export const NavLinks = [
     },
     {
         _id: "2",
-        name: "Vozila",
-        link: "/cars"
+        name: "Nova vozila",
+        link: "/newcars"
+    },
+    {
+        _id: "2",
+        name: "Rabljena vozila",
+        link: "/usedcars"
     },
     {
         _id: "3",

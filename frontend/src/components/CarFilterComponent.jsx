@@ -1,45 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { IoFilterCircleOutline } from "react-icons/io5";
-
 import {
-  useGetNewCarsByPriceAscQuery,
-  useGetNewCarsByPriceDescQuery,
+  useGetNewCarBrandsQuery,
+  useGetModelsByBrandQuery,
 } from "../slices/newCarsApiSlice";
 
-const carData = {
-  Audi: ["A3", "A4", "Q7", "Q5"],
-  BMW: ["3 Series", "5 Series", "X5", "X3"],
-  Mercedes: ["C-Class", "E-Class", "S-Class", "GLA"],
-  Tesla: ["Model S", "Model 3", "Model X", "Model Y"],
-};
-
-const CarFilterComponent = ({ onSelect }) => {
+const CarFilterComponent = ({ onFilterChange, onSortChange }) => {
   const [isDropdownVisible, setDropdownVisible] = useState(false);
-  const [sortByPrice, setSortByPrice] = useState("");
 
-  //filtering by price
-  const {
-    data: newCarsAsc,
-    isLoading: isLoadingAsc,
-    error: errorAsc,
-  } = useGetNewCarsByPriceAscQuery(sortByPrice === "asc" ? undefined : null);
-  const {
-    data: newCarsDesc,
-    isLoading: isLoadingDesc,
-    error: errorDesc,
-  } = useGetNewCarsByPriceDescQuery(sortByPrice === "desc" ? undefined : null);
-
-  const isLoading = isLoadingAsc || isLoadingDesc;
-  const error = errorAsc || errorDesc;
-
-  const handleSortByPrice = (sortOrder) => {
-    setSortByPrice(sortOrder);
-    setDropdownVisible(false);
-  };
-
-  const sortedData = sortByPrice === "asc" ? newCarsAsc : newCarsDesc;
-  onSelect(sortedData);
-
+  // Filter state
   const [selectedBrand, setSelectedBrand] = useState("");
   const [selectedModel, setSelectedModel] = useState("");
 
@@ -54,29 +23,67 @@ const CarFilterComponent = ({ onSelect }) => {
   const [isDiesel, setIsDiesel] = useState(false);
   const [isBenzin, setIsBenzin] = useState(false);
 
-  const toggleDropdown = () => {
-    setDropdownVisible(!isDropdownVisible);
-  };
+  
+  const toggleDropdown = () => setDropdownVisible(!isDropdownVisible);
 
+  //fetching car brands and models from database
+  const { data: carBrands } = useGetNewCarBrandsQuery();
+  const { data: models } = useGetModelsByBrandQuery(selectedBrand);
+
+  //once user selects a brand, model is removed
   const handleBrandChange = (e) => {
     setSelectedBrand(e.target.value);
     setSelectedModel("");
   };
 
+  // bulidFilters object - every filter is optional
+  const buildFilters = () => {
+    const filters = {};
+    if (selectedBrand) filters.brand = selectedBrand;
+    if (selectedModel) filters.model = selectedModel;
+    if (minPrice) filters.minPrice = minPrice;
+    if (maxPrice) filters.maxPrice = maxPrice;
+    if (minMakeYear) filters.minMakeYear = minMakeYear;
+    if (maxMakeYear) filters.maxMakeYear = maxMakeYear;
+    if (isAutomatic) filters.transmission = "Auto";
+    if (isManual) filters.transmission = "Manual";
+    if (isDiesel) filters.motor = "Diesel";
+    if (isBenzin) filters.motor = "Benzin";
+    return filters;
+  };
+
+  // filter form submission
   const handleSearch = () => {
-    // Implement your search logic here
+    onFilterChange(buildFilters());
+  };
+
+  //to clean all filters
+  const handleClearFilters = () => {
+    setSelectedBrand("");
+    setSelectedModel("");
+    setMinPrice("");
+    setMaxPrice("");
+    setMinMakeYear("");
+    setMaxMakeYear("");
+    setIsAutomatic(false);
+    setIsManual(false);
+    setIsDiesel(false);
+    setIsBenzin(false);
+    onFilterChange({}); // sends empty filters to the parent component
+  };
+
+  // handles sorting by price (low to high or vice versa)
+  const handleSortByPrice = (sortOrder) => {
+    onSortChange(sortOrder); // sending sort order to parent component (so it can be applied without filters)
+    setDropdownVisible(false);
   };
 
   return (
-    <div
-      className="filter-component p-6 rounded-lg max-w-[300] mx-auto border-2 shadow-md relative m-10
-    hover:border-primary dark:border-dark"
-    >
+    <div className=" p-4 rounded-lg lg:max-h-[450px] lg:max-w-[850px] mx-auto border-2 shadow-md relative m-10 hover:border-primary dark:border-dark">
       <h1 className="text-center font-semibold text-3xl text-primary">
         Filtriraj rezultate
       </h1>
       <div className="flex flex-wrap md:flex-nowrap justify-between items-start mt-4">
-        {/* Left Side: Brand, Model, and Price */}
         <div className="w-full md:w-1/2 mb-4 md:mb-0 md:mr-4">
           <div className="mb-4 flex space-x-4">
             <div className="flex-1">
@@ -89,8 +96,8 @@ const CarFilterComponent = ({ onSelect }) => {
                 onChange={handleBrandChange}
                 className="w-full px-3 py-2 border rounded-lg dark:bg-dark"
               >
-                <option value="">Odaberite marku vozila</option>
-                {Object.keys(carData).map((brand) => (
+                <option value="">Odaberite marku </option>
+                {carBrands?.map((brand) => (
                   <option key={brand} value={brand}>
                     {brand}
                   </option>
@@ -106,20 +113,18 @@ const CarFilterComponent = ({ onSelect }) => {
                 value={selectedModel}
                 onChange={(e) => setSelectedModel(e.target.value)}
                 className="w-full px-3 py-2 border rounded-lg dark:bg-dark"
-                disabled={!selectedBrand} // Disable if no brand is selected
+                disabled={!selectedBrand}
               >
                 <option value="">Odaberite model</option>
-                {selectedBrand &&
-                  carData[selectedBrand].map((model) => (
-                    <option key={model} value={model}>
-                      {model}
-                    </option>
-                  ))}
+                {models?.map((model) => (
+                  <option key={model} value={model}>
+                    {model}
+                  </option>
+                ))}
               </select>
             </div>
           </div>
 
-          {/* Price Range */}
           <div className="mb-4 flex space-x-4">
             <div className="flex-1">
               <label htmlFor="minPrice" className="block mb-2">
@@ -145,11 +150,8 @@ const CarFilterComponent = ({ onSelect }) => {
               />
             </div>
           </div>
-
-          {/* Year of Production */}
         </div>
 
-        {/* Right Side: Year, Transmission, and Fuel */}
         <div className="w-full md:w-1/2">
           <div className="mb-4 flex space-x-2">
             <div className="flex-1">
@@ -179,7 +181,7 @@ const CarFilterComponent = ({ onSelect }) => {
               />
             </div>
           </div>
-          {/* Transmission Type */}
+
           <div className="mb-4 ">
             <label className="block mb-2">Mjenjač:</label>
             <div className="flex space-x-4">
@@ -188,7 +190,10 @@ const CarFilterComponent = ({ onSelect }) => {
                   type="checkbox"
                   id="automatic"
                   checked={isAutomatic}
-                  onChange={() => setIsAutomatic(!isAutomatic)}
+                  onChange={() => {
+                    setIsAutomatic(!isAutomatic);
+                    setIsManual(false);
+                  }}
                   className="mr-2"
                 />
                 <label htmlFor="automatic">Automatski</label>
@@ -198,7 +203,10 @@ const CarFilterComponent = ({ onSelect }) => {
                   type="checkbox"
                   id="manual"
                   checked={isManual}
-                  onChange={() => setIsManual(!isManual)}
+                  onChange={() => {
+                    setIsManual(!isManual);
+                    setIsAutomatic(false);
+                  }}
                   className="mr-2"
                 />
                 <label htmlFor="manual">Ručni</label>
@@ -206,7 +214,6 @@ const CarFilterComponent = ({ onSelect }) => {
             </div>
           </div>
 
-          {/* Fuel Type */}
           <div className="mb-4">
             <label className="block mb-2">Motor:</label>
             <div className="flex space-x-4">
@@ -215,7 +222,10 @@ const CarFilterComponent = ({ onSelect }) => {
                   type="checkbox"
                   id="diesel"
                   checked={isDiesel}
-                  onChange={() => setIsDiesel(!isDiesel)}
+                  onChange={() => {
+                    setIsDiesel(!isDiesel);
+                    setIsBenzin(false);
+                  }}
                   className="mr-2"
                 />
                 <label htmlFor="diesel">Diesel</label>
@@ -225,7 +235,10 @@ const CarFilterComponent = ({ onSelect }) => {
                   type="checkbox"
                   id="benzin"
                   checked={isBenzin}
-                  onChange={() => setIsBenzin(!isBenzin)}
+                  onChange={() => {
+                    setIsBenzin(!isBenzin);
+                    setIsDiesel(false);
+                  }}
                   className="mr-2"
                 />
                 <label htmlFor="benzin">Benzin</label>
@@ -233,40 +246,50 @@ const CarFilterComponent = ({ onSelect }) => {
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Filter Button with Dropdown */}
-      <div className="absolute top-2 right-2 md:top-0 md:right-0 p-2">
-        <div
-          className="border-2 border-black p-1 rounded-lg hover:border-primary transition transform hover:scale-110 cursor-pointer"
-          onClick={toggleDropdown}
-        >
-          <IoFilterCircleOutline className="text-4xl" />
+        <div className="mb-4 md:ml-4 relative">
+          <button
+            className="flex items-center justify-center w-full sm:w-auto space-x-2"
+            onClick={toggleDropdown}
+          >
+            <IoFilterCircleOutline
+              className="text-5xl dark:text-primary 
+             hover:text-primary hover:scale-110 
+             active:text-primary active:scale-100
+              transition-transform duration-200"
+            />
+          </button>
+
+          {isDropdownVisible && (
+            <div
+              className="absolute bg-white border rounded-lg mt-2 p-2 shadow-lg w-[180px] z-10
+             dark:bg-dark dark:border-dark dark:text-white right-5"
+            >
+              <ul className="space-y-2">
+                <li
+                  className="px-2 py-2 hover:bg-gray-100 dark:hover:bg-primary cursor-pointer"
+                  onClick={() => handleSortByPrice("asc")}
+                >
+                  Cijena: prvo najniža
+                </li>
+                <li
+                  className="px-2 py-2 hover:bg-gray-100 dark:hover:bg-primary cursor-pointer"
+                  onClick={() => handleSortByPrice("desc")}
+                >
+                  Cijena: prvo najviša
+                </li>
+              </ul>
+            </div>
+          )}
         </div>
-        {isDropdownVisible && (
-          <div className="absolute right-2 mt-4 w-40 bg-white dark:bg-dark border border-gray-300 dark:border-dark rounded-lg shadow-lg z-10">
-            <ul className="py-1">
-              <li
-                className="px-2 py-2 hover:bg-gray-100 dark:hover:bg-primary cursor-pointer"
-                onClick={() => handleSortByPrice("asc")}
-              >
-                Cijena: prvo najniža
-              </li>
-              <li
-                className="px-2 py-2 hover:bg-gray-100 dark:hover:bg-primary cursor-pointer"
-                onClick={() => handleSortByPrice("desc")}
-              >
-                Cijena: prvo najviša
-              </li>
-            </ul>
-          </div>
-        )}
       </div>
 
-      {/* Search Button */}
-      <div className="flex justify-center mt-6">
-        <button className="button-outline" onClick={handleSearch}>
+      <div className="flex justify-center mt-6 space-x-4">
+        <button onClick={handleSearch} className="button-outline">
           Pretraži
+        </button>
+        <button onClick={handleClearFilters} className="button-outline">
+          Očisti
         </button>
       </div>
     </div>
