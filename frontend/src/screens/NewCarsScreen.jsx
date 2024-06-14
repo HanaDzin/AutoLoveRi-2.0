@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from "react";
 import {
-  useGetFilteredCarsQuery,
+  useGetFilteredNewCarsQuery,
   useGetNewCarsQuery,
 } from "../slices/newCarsApiSlice";
+
 import NewCarsSelection from "../components/CarSelections/NewCarsSelection";
-import CarFilterComponent from "../components/CarFilterComponent";
+import NewCarsFilterComponent from "../components/NewCarsFilterComponent";
 
 const NewCarsScreen = () => {
   const [filters, setFilters] = useState({});
   const [sorting, setSorting] = useState("");
 
-  const { data: filteredCarsData } = useGetFilteredCarsQuery(filters);
+  const { data: filteredCarsData } = useGetFilteredNewCarsQuery(filters);
   const { data: allNewCarsData, isLoading: isLoadingNewCars } =
     useGetNewCarsQuery();
 
@@ -65,7 +66,7 @@ const NewCarsScreen = () => {
           </div>
           <div className="md:w-1/4 md:order-1 sm:order-1">
             <div className="sticky top-0">
-              <CarFilterComponent
+              <NewCarsFilterComponent
                 onFilterChange={handleFilterChange}
                 onSortChange={handleSortChange}
               />

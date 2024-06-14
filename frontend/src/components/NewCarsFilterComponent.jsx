@@ -2,10 +2,10 @@ import React, { useState } from "react";
 
 import {
   useGetNewCarBrandsQuery,
-  useGetModelsByBrandQuery,
+  useGetNewCarsModelsByBrandQuery,
 } from "../slices/newCarsApiSlice";
 
-const CarFilterComponent = ({ onFilterChange, onSortChange }) => {
+const NewCarsFilterComponent = ({ onFilterChange, onSortChange }) => {
   const [isDropdownVisible, setDropdownVisible] = useState(false);
 
   const [selectedBrand, setSelectedBrand] = useState("");
@@ -22,7 +22,7 @@ const CarFilterComponent = ({ onFilterChange, onSortChange }) => {
 
   // fetching car brands and models from the database
   const { data: carBrands } = useGetNewCarBrandsQuery();
-  const { data: models } = useGetModelsByBrandQuery(selectedBrand);
+  const { data: models } =   useGetNewCarsModelsByBrandQuery(selectedBrand);
 
   // handles brand change
   const handleBrandChange = (e) => {
@@ -270,4 +270,4 @@ const CarFilterComponent = ({ onFilterChange, onSortChange }) => {
   );
 };
 
-export default CarFilterComponent;
+export default NewCarsFilterComponent;

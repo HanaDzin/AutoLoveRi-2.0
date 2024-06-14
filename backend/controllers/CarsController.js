@@ -172,6 +172,22 @@ const getUsedCarById = asyncHandler (async (req, res) => {
     throw new Error('Rabljeno vozilo nije pronađeno');
 });
 
+// @desc gets all of the used cars sorted by price from lowest to highest
+// @route GET /api/usedcars/sort/asc
+// @acces public
+const getUsedCarsByPriceAsc = asyncHandler(async (req, res) => {
+    const usedCars = await usedCar.find({}).sort({ price: 1 });
+    res.json(usedCars);
+});
+
+// @desc gets all of the used cars sorted by price from highest to lowest
+// @route GET /api/usedcars/sort/asc
+// @acces public
+const getUsedCarsByPriceDesc = asyncHandler(async (req, res) => {
+    const usedCars = await usedCar.find({}).sort({ price: -1 });
+    res.json(usedCars);
+});
+
 //@desc     add a used car (admin)
 //@route    POST /api/usedcars
 //@access   admin
@@ -240,6 +256,48 @@ const deleteUsedCar = asyncHandler (async (req, res) => {
     }
 });
 
+
+// @desc Get all car brands
+// @route GET /api/usedcars/brands
+// @access Public
+const getUsedCarBrands = asyncHandler(async (req, res) => {
+    const usedCarsBrands = await usedCar.distinct('brand');
+    res.json(usedCarsBrands);
+});
+
+// @desc Get all car models of a selected brand
+// @route GET /api/usedcars/:brand/models
+// @access Public
+const getUsedCarsModelByBrands = asyncHandler(async (req, res) => {
+    const { brand } = req.params;
+    const models = await usedCar.find({ brand }).distinct('model');
+    res.json(models);
+  });
+
+// @desc Gets all new cars with optional filtering
+// @route GET /api/usedcars/filter
+// @access Public
+const getFilteredUsedCars = asyncHandler(async (req, res) => {
+    const { brand, model, minPrice, maxPrice, minMileage, maxMileage, transmission, motor } = req.query;
+
+    let query = {};
+
+    //not any of the parameters is neccessary, only build the query with the selected ones
+    if (brand) query.brand = brand;
+    if (model) query.model = model;
+    if (minPrice) query.price = { ...query.price, $gte: Number(minPrice) }; 
+    if (maxPrice) query.price = { ...query.price, $lte: Number(maxPrice) }; 
+    if (minMileage) query.mileage = { ...query.mileage, $gte: Number(minMileage) };
+    if (maxMileage) query.mileage = { ...query.mileage, $lte: Number(maxMileage) };
+    if (transmission) query.transmission = transmission;
+    if (motor) query.motor = motor;
+
+    //returns the cars that match the query
+    const usedFilteredCars = await usedCar.find(query);    
+    res.json(usedFilteredCars);
+});
+
+
 export {getNewCars, 
     getNewCarById,
     getNewCarsByPriceAsc,
@@ -252,7 +310,12 @@ export {getNewCars,
     getFilteredNewCars,
     getUsedCars, 
     getUsedCarById,
+    getUsedCarsByPriceAsc,
+    getUsedCarsByPriceDesc,
     createUsedCar,
     updateUsedCar,
-    deleteUsedCar
+    deleteUsedCar,
+    getUsedCarBrands,
+    getUsedCarsModelByBrands,
+    getFilteredUsedCars
  };
