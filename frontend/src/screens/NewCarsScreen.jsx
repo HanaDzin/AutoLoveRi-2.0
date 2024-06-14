@@ -1,21 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { useGetFilteredCarsQuery, useGetNewCarsQuery } from "../slices/newCarsApiSlice";
+import {
+  useGetFilteredCarsQuery,
+  useGetNewCarsQuery,
+} from "../slices/newCarsApiSlice";
 import NewCarsSelection from "../components/CarSelections/NewCarsSelection";
 import CarFilterComponent from "../components/CarFilterComponent";
 
 const NewCarsScreen = () => {
   const [filters, setFilters] = useState({});
+  const [sorting, setSorting] = useState("");
 
-  //sorting saved independently, so it can be used with or without filters
-  const [sorting, setSorting] = useState("");  
-
-  //fetch filtered cars if any filters are applied
   const { data: filteredCarsData } = useGetFilteredCarsQuery(filters);
-  
-  //fetch all new cars for initial view or sorting when no filters are applied
-  const { data: allNewCarsData, isLoading: isLoadingNewCars } = useGetNewCarsQuery();
+  const { data: allNewCarsData, isLoading: isLoadingNewCars } =
+    useGetNewCarsQuery();
 
-  //so that even filtered data can be sorted and refreshed every time sorting changes
   useEffect(() => {
     if (sorting) {
       setFilters({ ...filters, sortByPrice: sorting });
@@ -30,7 +28,6 @@ const NewCarsScreen = () => {
     setSorting(sortOrder);
   };
 
-  //applying sorting to the data
   const applySorting = (data) => {
     if (!sorting) return data;
 
@@ -47,8 +44,11 @@ const NewCarsScreen = () => {
 
   return (
     <div className="pb-10 pt-14 dark:bg-black dark:text-white duration-300 sm:min-h-[600px] sm:grid sm:place-items-center">
-      <div className="container">
-        <h1 className="text-3xl sm:text-4xl font-semibold mb-3 text-center text-primary" data-aos="fade-up">
+      <div className="container mx-auto px-2">
+        <h1
+          className="text-3xl sm:text-4xl font-semibold mb-3 text-center text-primary"
+          data-aos="fade-up"
+        >
           Nova vozila
         </h1>
 
@@ -56,8 +56,22 @@ const NewCarsScreen = () => {
           Pogledajte široku ponudu potpuno novih vozila.
         </p>
 
-        <CarFilterComponent onFilterChange={handleFilterChange} onSortChange={handleSortChange} />
-        <NewCarsSelection sortedData={sortedData} isLoading={isLoadingNewCars} />
+        <div className="flex flex-col md:flex-row gap-2 md:gap-6">
+          <div className="md:w-3/4 md:order-1 sm:order-2">
+            <NewCarsSelection
+              sortedData={sortedData}
+              isLoading={isLoadingNewCars}
+            />
+          </div>
+          <div className="md:w-1/4 md:order-1 sm:order-1">
+            <div className="sticky top-0">
+              <CarFilterComponent
+                onFilterChange={handleFilterChange}
+                onSortChange={handleSortChange}
+              />
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
